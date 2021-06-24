@@ -48,11 +48,8 @@ Additionally you must specify the needed configuration elements within your AppS
 ```
   "SendGridServiceOptions": {
     "AdminEmail": "test@test.com",
-    "Server": "test.smtp.com",
-    "Port": 527,
-    "UseSsl": true,
-    "SenderUsername": "MySender",
-    "SenderPassword": "Password",
+    "SendGridApiKey": "YourKey",
+    "AdditionalApiKeys": { "SpecialSender": "SpecialKey" }
     "AlwaysTemplateEmails": true,
     "AddEnvironmentSuffix": true
   },
@@ -66,11 +63,8 @@ Additionally you must specify the needed configuration elements within your AppS
 | Setting | Description |
 | --- | --- |
 | AdminEmail | This is the email address used as the "from" address and also for any usage of the "SendToAdministrator" option |
-| Server | The SMTP Server address to use |
-| Port | The Port to use for outbound emails |
-| UseSsl | Should SSL be used for emails |
-| SenderUsername | The username that should be used to connect to SMTP |
-| SenderPassword | The password that should be used to connect to SMTP |
+| SendGridApiKey | The API Key to use for default sending of email addresses |
+| AdditionalApiKeys | These are name/value pairs of additional API keys that could be used for sending emails.  Totally optional |
 | AlwaysTemplateEmails | If selected ALL emails sent will be templated, by default using the "DefaultTemplate" as configured |
 | AddEnvironmentSuffix | If selected, all outbound emails sent from non-production addresses will have the environment name added to the end of the subject |
 | DefaultTemplatePath | The path, relative to the application root, where the default HTML template can be found for emails |
