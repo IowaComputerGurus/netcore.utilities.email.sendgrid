@@ -48,7 +48,8 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         /// <param name="subject">The message subject</param>
         /// <param name="bodyHtml">The message body</param>
         /// <param name="templateName">The optional custom template to override with</param>
-        void SendMessage(string toAddress, IEnumerable<string> ccAddressList, string subject, string bodyHtml, string templateName = "");
+        /// <param name="customKey">The custom key for API usage if needed</param>
+        void SendMessage(string toAddress, IEnumerable<string> ccAddressList, string subject, string bodyHtml, string templateName = "", string customKey = "");
 
         /// <summary>
         ///  Creates a message with an attachment
@@ -60,15 +61,17 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         /// <param name="fileName">Attachment file name</param>
         /// <param name="bodyHtml">The HTML body contents</param>
         /// <param name="templateName">The optional custom template to override with</param>
+        /// <param name="customKey">The custom key for API usage if needed</param>
         /// <returns></returns>
         void SendMessageWithAttachment(string toAddress, IEnumerable<string> ccAddressList, string subject,
-            byte[] fileContent, string fileName, string bodyHtml, string templateName = "");
+            byte[] fileContent, string fileName, string bodyHtml, string templateName = "", string customKey = "");
     }
 
     /// <inheritdoc />
     public class SendGridService : ISendGridService
     {
         private readonly SendGridServiceOptions _serviceOptions;
+        private readonly ISendGridMessageBuilder _messageBuilder;
 
         /// <inheritdoc />
         public string AdminEmail => _serviceOptions?.AdminEmail;
@@ -77,8 +80,9 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         ///     DI Capable Constructor for SendGrid message delivery using MimeKit/MailKit
         /// </summary>
         /// <param name="serviceOptions"></param>
-        public SendGridService(IOptions<SendGridServiceOptions> serviceOptions)
+        public SendGridService(IOptions<SendGridServiceOptions> serviceOptions, ISendGridMessageBuilder messageBuilder)
         {
+            _messageBuilder = messageBuilder;
             _serviceOptions = serviceOptions.Value;
         }
 
@@ -103,22 +107,24 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         }
 
         /// <inheritdoc />
-        public void SendMessage(string toAddress, IEnumerable<string> ccAddressList, string subject, string bodyHtml, string templateName = "")
+        public void SendMessage(string toAddress, IEnumerable<string> ccAddressList, string subject, string bodyHtml, string templateName = "", string customKey = "")
         {
-            //Convert to a mime message
-            //var toSend = _mimeMessageFactory.CreateFromMessage(_serviceOptions.AdminEmail, toAddress,
-            //    ccAddressList, subject, bodyHtml, templateName);
+            //Get the message to send
+            var toSend = _messageBuilder.CreateMessage(_serviceOptions.AdminEmail, toAddress, ccAddressList, subject,
+                bodyHtml, templateName);
+
+            
 
             ////Send
             //_mimeKitService.SendEmail(toSend);
         }
 
         /// <inheritdoc />
-        public void SendMessageWithAttachment(string toAddress, IEnumerable<string> ccAddressList, string subject, byte[] fileContent, string fileName, string bodyHtml, string templateName = "")
+        public void SendMessageWithAttachment(string toAddress, IEnumerable<string> ccAddressList, string subject, byte[] fileContent, string fileName, string bodyHtml, string templateName = "", string customKey = "")
         {
-            ////Covert to a mime message
-            //var toSend = _mimeMessageFactory.CreateFromMessageWithAttachment(_serviceOptions.AdminEmail, toAddress,
-            //    ccAddressList, subject, fileContent, fileName, bodyHtml, templateName);
+            //Get the message to send
+            var toSend = _messageBuilder.CreateMessageWithAttachment(_serviceOptions.AdminEmail, toAddress,
+                ccAddressList, fileContent, fileName, subject, bodyHtml, templateName);
 
             ////Send
             //_mimeKitService.SendEmail(toSend);

@@ -20,6 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             //Bind additional services
             services.AddTransient<ISendGridService, SendGridService>();
+            services.AddTransient<ISendGridMessageBuilder, SendGridMessageBuilder>();
             services.Configure<SendGridServiceOptions>(configuration.GetSection(nameof(SendGridServiceOptions)));
         }
     }
