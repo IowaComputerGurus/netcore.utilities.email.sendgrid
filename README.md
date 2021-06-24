@@ -46,7 +46,7 @@ services.UseIcgNetCoreUtilitiesEmailSendGrid();
 Additionally you must specify the needed configuration elements within your AppSettings.json file
 
 ```
-  "SendGridEmailOptions": {
+  "SendGridServiceOptions": {
     "AdminEmail": "test@test.com",
     "Server": "test.smtp.com",
     "Port": 527,
