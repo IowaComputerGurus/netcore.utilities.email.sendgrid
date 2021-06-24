@@ -11,11 +11,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
         private readonly SendGridServiceOptions _options = new SendGridServiceOptions()
         {
             AdminEmail = "admin@test.com",
-            Port = 15,
-            UseSsl = true,
-            SenderUsername = "User",
-            SenderPassword = "Password",
-            Server = "Server",
+            SendGridApiKey = "APIKEY",
             AddEnvironmentSuffix = false,
             AlwaysTemplateEmails = false
         };

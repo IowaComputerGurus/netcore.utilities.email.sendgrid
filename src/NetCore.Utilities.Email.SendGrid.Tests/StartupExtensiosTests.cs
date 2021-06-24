@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
 namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
 {
-    public class StartupExtensiosTests
+    public class StartupExtensionsTests
     {
         [Fact]
         public void Configuration_ShouldMapAllValues()
@@ -28,11 +27,11 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             Assert.NotNull(myConfig);
             var values = myConfig.Value;
             Assert.Equal("test@test.com", values.AdminEmail);
-            Assert.Equal("test.SendGrid.com", values.Server);
-            Assert.Equal(527, values.Port);
-            Assert.True(values.UseSsl);
-            Assert.Equal("MySender", values.SenderUsername);
-            Assert.Equal("Password", values.SenderPassword);
+            Assert.Equal("TestKey", values.SendGridApiKey);
+            Assert.Single(values.AdditionalApiKeys);
+            var specialKeyValue = values.AdditionalApiKeys["SpecialSender"];
+            Assert.Equal("SpecialKey", specialKeyValue);
+
             Assert.True(values.AlwaysTemplateEmails);
             Assert.True(values.AddEnvironmentSuffix);
         }

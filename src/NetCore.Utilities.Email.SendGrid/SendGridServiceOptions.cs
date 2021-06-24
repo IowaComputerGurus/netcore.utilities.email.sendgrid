@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ICG.NetCore.Utilities.Email.SendGrid
 {
@@ -14,34 +15,14 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         public string AdminEmail { get; set; }
 
         /// <summary>
-        ///     The server for outbound emails
+        /// The SendGrid API key that needs to 
         /// </summary>
-        [Display(Name = "Server")]
-        public string Server { get; set; }
+        public string SendGridApiKey { get; set; }
 
         /// <summary>
-        ///     The port to use for communication
+        /// Optional additional API Keys for sending outbound emails
         /// </summary>
-        [Display(Name = "Port")]
-        public int Port { get; set; }
-
-        /// <summary>
-        ///     Should this use SSL connection
-        /// </summary>
-        [Display(Name = "Use SSL")]
-        public bool UseSsl { get; set; }
-
-        /// <summary>
-        ///     The username to use for sending
-        /// </summary>
-        [Display(Name = "Sender Username")]
-        public string SenderUsername { get; set; }
-
-        /// <summary>
-        ///     THe password to use for sending
-        /// </summary>
-        [Display(Name = "Sender Password")]
-        public string SenderPassword { get; set; }
+        public Dictionary<string, string> AdditionalApiKeys { get; set; }
 
         /// <summary>
         ///     If selected outbound emails will be sent with the default template unless a special template is requested
