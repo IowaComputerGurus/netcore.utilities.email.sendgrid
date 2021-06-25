@@ -16,14 +16,16 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             AlwaysTemplateEmails = false
         };
 
-        private Mock<ISendGridMessageBuilder> _sendGridMessageBuilderMock;
+        private readonly Mock<ISendGridMessageBuilder> _sendGridMessageBuilderMock;
+        private readonly Mock<ISendGridSender> _sendGridSenderMock;
         private readonly ISendGridService _service;
 
-        public SendGridServiceTests(Mock<ISendGridMessageBuilder> sendGridMessageBuilderMock)
+        public SendGridServiceTests()
         {
-            _sendGridMessageBuilderMock = sendGridMessageBuilderMock;
+            _sendGridMessageBuilderMock = new Mock<ISendGridMessageBuilder>();
+            _sendGridSenderMock = new Mock<ISendGridSender>();
             _service = new SendGridService(new OptionsWrapper<SendGridServiceOptions>(_options),
-                sendGridMessageBuilderMock.Object);
+                _sendGridMessageBuilderMock.Object, _sendGridSenderMock.Object);
         }
 
         [Fact]
@@ -43,7 +45,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
         public void AdminEmail_ShouldReturnNullWhenNoConfiguration()
         {
             //Arrange
-            var testService = new SendGridService(new OptionsWrapper<SendGridServiceOptions>(null), _sendGridMessageBuilderMock.Object);
+            var testService = new SendGridService(new OptionsWrapper<SendGridServiceOptions>(null), _sendGridMessageBuilderMock.Object, _sendGridSenderMock.Object);
 
             //Act
             var result = testService.AdminEmail;

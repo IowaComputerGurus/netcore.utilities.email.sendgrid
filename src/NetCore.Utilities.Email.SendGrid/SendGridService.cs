@@ -22,7 +22,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         /// </summary>
         /// <param name="subject">The message subject</param>
         /// <param name="bodyHtml">The message body</param>
-        void SendMessageToAdministrator(string subject, string bodyHtml);
+        bool SendMessageToAdministrator(string subject, string bodyHtml);
 
         /// <summary>
         /// Sends a message to the administrator as well as the additional contacts provided.
@@ -30,7 +30,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         /// <param name="ccAddressList">Additional email addresses to add to the CC line</param>
         /// <param name="subject">The email subject</param>
         /// <param name="bodyHtml">The HTML content of the email</param>
-        void SendMessageToAdministrator(IEnumerable<string> ccAddressList, string subject, string bodyHtml);
+        bool SendMessageToAdministrator(IEnumerable<string> ccAddressList, string subject, string bodyHtml);
 
         /// <summary>
         ///     Sends a message to the specified recipient, with the supplied subject and body
@@ -38,7 +38,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         /// <param name="toAddress">Who is receiving the email</param>
         /// <param name="subject">The message subject</param>
         /// <param name="bodyHtml">The message body</param>
-        void SendMessage(string toAddress, string subject, string bodyHtml);
+        bool SendMessage(string toAddress, string subject, string bodyHtml);
 
         /// <summary>
         ///     Sends a message to the specified recipient, and CC's with the supplied subject and body
@@ -48,8 +48,8 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         /// <param name="subject">The message subject</param>
         /// <param name="bodyHtml">The message body</param>
         /// <param name="templateName">The optional custom template to override with</param>
-        /// <param name="customKey">The custom key for API usage if needed</param>
-        void SendMessage(string toAddress, IEnumerable<string> ccAddressList, string subject, string bodyHtml, string templateName = "", string customKey = "");
+        /// <param name="senderKeyName">The custom key for API usage if needed</param>
+        bool SendMessage(string toAddress, IEnumerable<string> ccAddressList, string subject, string bodyHtml, string templateName = "", string senderKeyName = "");
 
         /// <summary>
         ///  Creates a message with an attachment
@@ -61,10 +61,10 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         /// <param name="fileName">Attachment file name</param>
         /// <param name="bodyHtml">The HTML body contents</param>
         /// <param name="templateName">The optional custom template to override with</param>
-        /// <param name="customKey">The custom key for API usage if needed</param>
+        /// <param name="senderKeyName">The custom key for API usage if needed</param>
         /// <returns></returns>
-        void SendMessageWithAttachment(string toAddress, IEnumerable<string> ccAddressList, string subject,
-            byte[] fileContent, string fileName, string bodyHtml, string templateName = "", string customKey = "");
+        bool SendMessageWithAttachment(string toAddress, IEnumerable<string> ccAddressList, string subject,
+            byte[] fileContent, string fileName, string bodyHtml, string templateName = "", string senderKeyName = "");
     }
 
     /// <inheritdoc />
@@ -72,6 +72,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
     {
         private readonly SendGridServiceOptions _serviceOptions;
         private readonly ISendGridMessageBuilder _messageBuilder;
+        private readonly ISendGridSender _sender;
 
         /// <inheritdoc />
         public string AdminEmail => _serviceOptions?.AdminEmail;
@@ -80,54 +81,64 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         ///     DI Capable Constructor for SendGrid message delivery using MimeKit/MailKit
         /// </summary>
         /// <param name="serviceOptions"></param>
-        public SendGridService(IOptions<SendGridServiceOptions> serviceOptions, ISendGridMessageBuilder messageBuilder)
+        /// <param name="messageBuilder"></param>
+        public SendGridService(IOptions<SendGridServiceOptions> serviceOptions, ISendGridMessageBuilder messageBuilder, ISendGridSender sender)
         {
             _messageBuilder = messageBuilder;
+            _sender = sender;
             _serviceOptions = serviceOptions.Value;
         }
 
         /// <inheritdoc />
-        public void SendMessageToAdministrator(string subject, string bodyHtml)
+        public bool SendMessageToAdministrator(string subject, string bodyHtml)
         {
             //Force to address
-            SendMessage(_serviceOptions.AdminEmail, null, subject, bodyHtml);
+            return SendMessage(_serviceOptions.AdminEmail, null, subject, bodyHtml);
         }
 
         /// <inheritdoc />
-        public void SendMessageToAdministrator(IEnumerable<string> ccAddressList, string subject, string bodyHtml)
+        public bool SendMessageToAdministrator(IEnumerable<string> ccAddressList, string subject, string bodyHtml)
         {
-            SendMessage(_serviceOptions.AdminEmail, ccAddressList, subject, bodyHtml);
+            return SendMessage(_serviceOptions.AdminEmail, ccAddressList, subject, bodyHtml);
         }
 
         /// <inheritdoc />
-        public void SendMessage(string toAddress, string subject, string bodyHtml)
+        public bool SendMessage(string toAddress, string subject, string bodyHtml)
         {
             //Call full overload
-            SendMessage(toAddress, null, subject, bodyHtml);
+            return SendMessage(toAddress, null, subject, bodyHtml);
         }
 
         /// <inheritdoc />
-        public void SendMessage(string toAddress, IEnumerable<string> ccAddressList, string subject, string bodyHtml, string templateName = "", string customKey = "")
+        public bool SendMessage(string toAddress, IEnumerable<string> ccAddressList, string subject, string bodyHtml, string templateName = "", string senderKeyName = "")
         {
             //Get the message to send
             var toSend = _messageBuilder.CreateMessage(_serviceOptions.AdminEmail, toAddress, ccAddressList, subject,
                 bodyHtml, templateName);
 
-            
+            //Determine the key to use
+            var apiKey = _serviceOptions.SendGridApiKey;
+            if (!string.IsNullOrEmpty(senderKeyName))
+                apiKey = _serviceOptions.AdditionalApiKeys[senderKeyName];
 
-            ////Send
-            //_mimeKitService.SendEmail(toSend);
+            //Send
+            return _sender.SendMessage(apiKey, toSend).GetAwaiter().GetResult();
         }
 
         /// <inheritdoc />
-        public void SendMessageWithAttachment(string toAddress, IEnumerable<string> ccAddressList, string subject, byte[] fileContent, string fileName, string bodyHtml, string templateName = "", string customKey = "")
+        public bool SendMessageWithAttachment(string toAddress, IEnumerable<string> ccAddressList, string subject, byte[] fileContent, string fileName, string bodyHtml, string templateName = "", string senderKeyName = "")
         {
             //Get the message to send
             var toSend = _messageBuilder.CreateMessageWithAttachment(_serviceOptions.AdminEmail, toAddress,
                 ccAddressList, fileContent, fileName, subject, bodyHtml, templateName);
 
-            ////Send
-            //_mimeKitService.SendEmail(toSend);
+            //Determine the key to use
+            var apiKey = _serviceOptions.SendGridApiKey;
+            if (!string.IsNullOrEmpty(senderKeyName))
+                apiKey = _serviceOptions.AdditionalApiKeys[senderKeyName];
+
+            //Send
+            return _sender.SendMessage(apiKey, toSend).GetAwaiter().GetResult();
         }
     }
 }

@@ -67,12 +67,12 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         /// <param name="options"></param>
         /// <param name="loggerFactory"></param>
         public SendGridMessageBuilder(IHostingEnvironment hostingEnvironment, IEmailTemplateFactory emailTemplateFactory, 
-            IOptions<SendGridServiceOptions> options, ILoggerFactory loggerFactory)
+            IOptions<SendGridServiceOptions> options, ILogger<SendGridMessageBuilder> logger)
         {
             _hostingEnvironment = hostingEnvironment;
             _emailTemplateFactory = emailTemplateFactory;
             _serviceOptions = options.Value;
-            _logger = loggerFactory.CreateLogger<SendGridMessageBuilder>();
+            _logger = logger;
         }
 
         /// <inheritdoc />
