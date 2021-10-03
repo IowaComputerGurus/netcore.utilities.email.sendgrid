@@ -65,7 +65,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         /// <param name="hostingEnvironment"></param>
         /// <param name="emailTemplateFactory"></param>
         /// <param name="options"></param>
-        /// <param name="loggerFactory"></param>
+        /// <param name="logger"></param>
         public SendGridMessageBuilder(IHostingEnvironment hostingEnvironment, IEmailTemplateFactory emailTemplateFactory, 
             IOptions<SendGridServiceOptions> options, ILogger<SendGridMessageBuilder> logger)
         {
@@ -134,6 +134,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
                 bodyHtml);
         }
 
+        /// <inheritdoc />
         public SendGridMessage CreateMessageWithAttachment(string from, string to, IEnumerable<string> cc,
             byte[] fileContent, string fileName, string subject, string bodyHtml, string templateName = "")
         {

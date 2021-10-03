@@ -82,6 +82,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         /// </summary>
         /// <param name="serviceOptions"></param>
         /// <param name="messageBuilder"></param>
+        /// <param name="sender"></param>
         public SendGridService(IOptions<SendGridServiceOptions> serviceOptions, ISendGridMessageBuilder messageBuilder, ISendGridSender sender)
         {
             _messageBuilder = messageBuilder;
