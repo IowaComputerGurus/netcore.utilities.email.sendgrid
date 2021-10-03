@@ -53,7 +53,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var services = collection.BuildServiceProvider();
 
             //Act
-            var result = services.GetService<ISendGridService>();
+            var result = services.GetService<IEmailService>();
 
             //Assert
             Assert.NotNull(result);

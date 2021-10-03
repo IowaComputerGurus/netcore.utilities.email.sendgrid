@@ -11,6 +11,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
         private readonly SendGridServiceOptions _options = new SendGridServiceOptions()
         {
             AdminEmail = "admin@test.com",
+            AdminName = "John Smith",
             SendGridApiKey = "APIKEY",
             AddEnvironmentSuffix = false,
             AlwaysTemplateEmails = false
@@ -18,7 +19,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
 
         private readonly Mock<ISendGridMessageBuilder> _sendGridMessageBuilderMock;
         private readonly Mock<ISendGridSender> _sendGridSenderMock;
-        private readonly ISendGridService _service;
+        private readonly IEmailService _service;
 
         public SendGridServiceTests()
         {
@@ -49,6 +50,32 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
 
             //Act
             var result = testService.AdminEmail;
+
+            //Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void AdminName_ShouldReturnConfigurationName()
+        {
+            //Arrange
+            var expectedName = "John Smith";
+
+            //Act
+            var result = _service.AdminName;
+
+            //Assert
+            Assert.Equal(expectedName, result);
+        }
+
+        [Fact]
+        public void AdminName_ShouldReturnNullWhenNoConfiguration()
+        {
+            //Arrange
+            var testService = new SendGridService(new OptionsWrapper<SendGridServiceOptions>(null), _sendGridMessageBuilderMock.Object, _sendGridSenderMock.Object);
+
+            //Act
+            var result = testService.AdminName;
 
             //Assert
             Assert.Null(result);
@@ -122,7 +149,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var message = "message";
 
             //Act
-            _service.SendMessageWithAttachment(to, cc, subject, fileContent, fileName, message);
+            _service.SendMessageWithAttachment(to, cc, subject, fileContent, fileName, message, null);
 
             //Assets
         }
@@ -138,7 +165,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var requestedTemplate = "Test";
 
             //Act
-            _service.SendMessage(to, cc, subject, message, requestedTemplate);
+            _service.SendMessage(to, cc, subject, message, null, requestedTemplate);
 
             //Assets
         }
@@ -156,7 +183,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var requestedTemplate = "Test";
 
             //Act
-            _service.SendMessageWithAttachment(to, cc, subject, fileContent, fileName, message, requestedTemplate);
+            _service.SendMessageWithAttachment(to, cc, subject, fileContent, fileName, message, null, requestedTemplate);
 
             //Assets
         }

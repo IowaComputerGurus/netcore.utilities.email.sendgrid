@@ -1,4 +1,5 @@
-﻿using ICG.NetCore.Utilities.Email.SendGrid;
+﻿using ICG.NetCore.Utilities.Email;
+using ICG.NetCore.Utilities.Email.SendGrid;
 using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -19,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.UseIcgNetCoreUtilitiesEmail(configuration);
 
             //Bind additional services
-            services.AddTransient<ISendGridService, SendGridService>();
+            services.AddTransient<IEmailService, SendGridService>();
             services.AddTransient<ISendGridMessageBuilder, SendGridMessageBuilder>();
             services.AddTransient<ISendGridSender, SendGridSender>();
             services.Configure<SendGridServiceOptions>(configuration.GetSection(nameof(SendGridServiceOptions)));
