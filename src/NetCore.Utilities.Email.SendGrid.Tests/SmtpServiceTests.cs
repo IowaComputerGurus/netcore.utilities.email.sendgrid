@@ -19,7 +19,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
 
         private readonly Mock<ISendGridMessageBuilder> _sendGridMessageBuilderMock;
         private readonly Mock<ISendGridSender> _sendGridSenderMock;
-        private readonly ISendGridService _service;
+        private readonly IEmailService _service;
 
         public SendGridServiceTests()
         {
@@ -149,7 +149,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var message = "message";
 
             //Act
-            _service.SendMessageWithAttachment(to, cc, subject, fileContent, fileName, message);
+            _service.SendMessageWithAttachment(to, cc, subject, fileContent, fileName, message, null);
 
             //Assets
         }
@@ -165,7 +165,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var requestedTemplate = "Test";
 
             //Act
-            _service.SendMessage(to, cc, subject, message, requestedTemplate);
+            _service.SendMessage(to, cc, subject, message, null, requestedTemplate);
 
             //Assets
         }
@@ -183,7 +183,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var requestedTemplate = "Test";
 
             //Act
-            _service.SendMessageWithAttachment(to, cc, subject, fileContent, fileName, message, requestedTemplate);
+            _service.SendMessageWithAttachment(to, cc, subject, fileContent, fileName, message, null, requestedTemplate);
 
             //Assets
         }

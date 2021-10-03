@@ -1,7 +1,7 @@
 # ICG.NetCore.Utilities.Email.SendGrid ![](https://img.shields.io/github/license/iowacomputergurus/netcore.utilities.email.SendGrid.svg)
 This library provides an easy to use implementation of SendGrid based email delivery.  This abstraction with proper interfaces allows email implementation inside of your project with little effort and easy to manage integration, and boasts features such as automatic environment name appending as well as robust email templates.
 
-This package depends on the ICG.NetCore.Utilities.Email project for template implementation 
+This package depends on the ICG.NetCore.Utilities.Email project for template implementation
 
 ## Build Status
 
@@ -75,7 +75,7 @@ Additionally you must specify the needed configuration elements within your AppS
 
 ### Usage
 
-Usage is primarly completed by injecting the ISmtpService interface to your respective project, one injected emails can be sent with a single line of code. 
+Usage is primarly completed by injecting the IEmailService interface to your respective project, one injected emails can be sent with a single line of code. 
 
 ```
 _sendGridService.SendEmail("recipient@me.com", "My Subject", "<p>Hello!</p>");
