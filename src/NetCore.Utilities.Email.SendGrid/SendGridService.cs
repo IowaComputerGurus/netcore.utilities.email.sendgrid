@@ -18,6 +18,11 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         string AdminEmail { get; }
 
         /// <summary>
+        /// Returns the configured administrator name for the SendGrid service
+        /// </summary>
+        string AdminName { get; }
+
+        /// <summary>
         ///     Shortcut for sending an email to the administrator, only requiring the subject and body.
         /// </summary>
         /// <param name="subject">The message subject</param>
@@ -76,6 +81,9 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
 
         /// <inheritdoc />
         public string AdminEmail => _serviceOptions?.AdminEmail;
+
+        /// <inheritdoc />
+        public string AdminName => _serviceOptions?.AdminName;
         
         /// <summary>
         ///     DI Capable Constructor for SendGrid message delivery using MimeKit/MailKit
@@ -114,7 +122,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         public bool SendMessage(string toAddress, IEnumerable<string> ccAddressList, string subject, string bodyHtml, string templateName = "", string senderKeyName = "")
         {
             //Get the message to send
-            var toSend = _messageBuilder.CreateMessage(_serviceOptions.AdminEmail, toAddress, ccAddressList, subject,
+            var toSend = _messageBuilder.CreateMessage(_serviceOptions.AdminEmail, _serviceOptions.AdminName, toAddress, ccAddressList, subject,
                 bodyHtml, templateName);
 
             //Determine the key to use
@@ -130,7 +138,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         public bool SendMessageWithAttachment(string toAddress, IEnumerable<string> ccAddressList, string subject, byte[] fileContent, string fileName, string bodyHtml, string templateName = "", string senderKeyName = "")
         {
             //Get the message to send
-            var toSend = _messageBuilder.CreateMessageWithAttachment(_serviceOptions.AdminEmail, toAddress,
+            var toSend = _messageBuilder.CreateMessageWithAttachment(_serviceOptions.AdminEmail, _serviceOptions.AdminName, toAddress,
                 ccAddressList, fileContent, fileName, subject, bodyHtml, templateName);
 
             //Determine the key to use

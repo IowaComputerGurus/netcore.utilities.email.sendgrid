@@ -11,6 +11,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
         private readonly SendGridServiceOptions _options = new SendGridServiceOptions()
         {
             AdminEmail = "admin@test.com",
+            AdminName = "John Smith",
             SendGridApiKey = "APIKEY",
             AddEnvironmentSuffix = false,
             AlwaysTemplateEmails = false
@@ -49,6 +50,32 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
 
             //Act
             var result = testService.AdminEmail;
+
+            //Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void AdminName_ShouldReturnConfigurationName()
+        {
+            //Arrange
+            var expectedName = "John Smith";
+
+            //Act
+            var result = _service.AdminName;
+
+            //Assert
+            Assert.Equal(expectedName, result);
+        }
+
+        [Fact]
+        public void AdminName_ShouldReturnNullWhenNoConfiguration()
+        {
+            //Arrange
+            var testService = new SendGridService(new OptionsWrapper<SendGridServiceOptions>(null), _sendGridMessageBuilderMock.Object, _sendGridSenderMock.Object);
+
+            //Act
+            var result = testService.AdminName;
 
             //Assert
             Assert.Null(result);

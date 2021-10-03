@@ -15,12 +15,18 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         public string AdminEmail { get; set; }
 
         /// <summary>
-        /// The SendGrid API key that needs to 
+        ///     An optional name for the administrative user
+        /// </summary>
+        [Display(Name = "Admin Name")]
+        public string AdminName { get; set; }
+
+        /// <summary>
+        ///     The SendGrid API key that needs to
         /// </summary>
         public string SendGridApiKey { get; set; }
 
         /// <summary>
-        /// Optional additional API Keys for sending outbound emails
+        ///     Optional additional API Keys for sending outbound emails
         /// </summary>
         public Dictionary<string, string> AdditionalApiKeys { get; set; }
 

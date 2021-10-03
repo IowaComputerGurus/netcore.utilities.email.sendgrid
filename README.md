@@ -48,6 +48,7 @@ Additionally you must specify the needed configuration elements within your AppS
 ```
   "SendGridServiceOptions": {
     "AdminEmail": "test@test.com",
+    "AdminName": "John Smith",
     "SendGridApiKey": "YourKey",
     "AdditionalApiKeys": { "SpecialSender": "SpecialKey" }
     "AlwaysTemplateEmails": true,
@@ -63,6 +64,7 @@ Additionally you must specify the needed configuration elements within your AppS
 | Setting | Description |
 | --- | --- |
 | AdminEmail | This is the email address used as the "from" address and also for any usage of the "SendToAdministrator" option |
+| AdminName | If specified this is the name that will be used for the "From" address on all outbound emails |
 | SendGridApiKey | The API Key to use for default sending of email addresses |
 | AdditionalApiKeys | These are name/value pairs of additional API keys that could be used for sending emails.  Totally optional |
 | AlwaysTemplateEmails | If selected ALL emails sent will be templated, by default using the "DefaultTemplate" as configured |

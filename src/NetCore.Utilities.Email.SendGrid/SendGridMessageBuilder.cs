@@ -14,32 +14,24 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
     public interface ISendGridMessageBuilder
     {
         /// <summary>
-        /// Creates a simple message for sending
-        /// </summary>
-        /// <param name="from">Who the message is from</param>
-        /// <param name="to">Who the message is to</param>
-        /// <param name="subject">The subject of the message</param>
-        /// <param name="bodyHtml">The Email's HTML content</param>
-        /// <returns></returns>
-        SendGridMessage CreateMessage(string from, string to, string subject, string bodyHtml);
-
-        /// <summary>
         /// Creates a simple message for sending with a custom template
         /// </summary>
         /// <param name="from">Who the message is from</param>
+        /// <param name="fromName">The name of the sender</param>
         /// <param name="to">Who the message is to</param>
         /// <param name="cc">An optional listing of CC addresses</param>
         /// <param name="subject">The subject of the message</param>
         /// <param name="bodyHtml">The Email's HTML content</param>
         /// <param name="templateName">The name of the template to use</param>
         /// <returns></returns>
-        SendGridMessage CreateMessage(string from, string to, IEnumerable<string> cc, string subject, string bodyHtml,
+        SendGridMessage CreateMessage(string from, string fromName, string to, IEnumerable<string> cc, string subject, string bodyHtml,
             string templateName = "");
 
         /// <summary>
         /// Creates a simple message for sending with a custom template and attachment
         /// </summary>
         /// <param name="from">Who the message is from</param>
+        /// <param name="fromName">The name of the sender</param>
         /// <param name="to">Who the message is to</param>
         /// <param name="cc">An optional listing of CC addresses</param>
         /// <param name="fileContent">The content of the attachment in bytes</param>
@@ -47,7 +39,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         /// <param name="subject">The subject of the message</param>
         /// <param name="bodyHtml">The Email's HTML content</param>
         /// <param name="templateName">The name of the template to use</param>
-        SendGridMessage CreateMessageWithAttachment(string from, string to, IEnumerable<string> cc,
+        SendGridMessage CreateMessageWithAttachment(string from, string fromName, string to, IEnumerable<string> cc,
             byte[] fileContent, string fileName, string subject, string bodyHtml, string templateName = "");
     }
 
@@ -74,15 +66,9 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
             _serviceOptions = options.Value;
             _logger = logger;
         }
-
+        
         /// <inheritdoc />
-        public SendGridMessage CreateMessage(string from, string to, string subject, string bodyHtml)
-        {
-            return CreateMessage(from, to, null, subject, bodyHtml);
-        }
-
-        /// <inheritdoc />
-        public SendGridMessage CreateMessage(string from, string to, IEnumerable<string> cc, string subject, string bodyHtml, string templateName = "")
+        public SendGridMessage CreateMessage(string from, string fromName, string to, IEnumerable<string> cc, string subject, string bodyHtml, string templateName = "")
         {
             //Validate inputs
             if (string.IsNullOrEmpty(from))
@@ -96,6 +82,8 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
 
             //Get addresses
             var fromAddress = new EmailAddress(from);
+            if (!string.IsNullOrEmpty(fromName))
+                fromAddress.Name = fromName;
             var recipients = new List<EmailAddress> {new EmailAddress(to)};
             if (cc != null)
             {
@@ -135,11 +123,11 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         }
 
         /// <inheritdoc />
-        public SendGridMessage CreateMessageWithAttachment(string from, string to, IEnumerable<string> cc,
+        public SendGridMessage CreateMessageWithAttachment(string from, string fromName, string to, IEnumerable<string> cc,
             byte[] fileContent, string fileName, string subject, string bodyHtml, string templateName = "")
         {
             //Build the  basic message
-            var toSend = CreateMessage(from, to, cc, subject, bodyHtml, templateName);
+            var toSend = CreateMessage(from, fromName, to, cc, subject, bodyHtml, templateName);
 
             //Attach file
             toSend.Attachments = new List<Attachment>
