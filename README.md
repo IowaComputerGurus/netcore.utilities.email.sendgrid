@@ -1,15 +1,12 @@
 # ICG.NetCore.Utilities.Email.SendGrid ![](https://img.shields.io/github/license/iowacomputergurus/netcore.utilities.email.SendGrid.svg)
+
+![Build Status](https://github.com/IowaComputerGurus/netcore.utilities.email/actions/workflows/ci-build.yml/badge.svg)
+
+![](https://img.shields.io/nuget/v/icg.netcore.utilities.email.sendgrid.svg) ![](https://img.shields.io/nuget/dt/icg.netcore.utilities.email.sendgrid.svg)
+
 This library provides an easy to use implementation of SendGrid based email delivery.  This abstraction with proper interfaces allows email implementation inside of your project with little effort and easy to manage integration, and boasts features such as automatic environment name appending as well as robust email templates.
 
 This package depends on the ICG.NetCore.Utilities.Email project for template implementation
-
-## Build Status
-
-| Branch | Status |
-| --- | --- |
-| Main | ![Main Status](https://iowacomputergurus.visualstudio.com/ICG%20Open%20Source/_apis/build/status/NetCore%20Utilities%20Email%20SendGrid?branchName=main) |
-| Develop | ![Develop Status](https://iowacomputergurus.visualstudio.com/ICG%20Open%20Source/_apis/build/status/NetCore%20Utilities%20Email%20SendGrid?branchName=develop)
-
 
 ## SonarCloud Analysis
 
@@ -18,10 +15,6 @@ This package depends on the ICG.NetCore.Utilities.Email project for template imp
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=IowaComputerGurus_netcore.utilities.email.sendgrid&metric=security_rating)](https://sonarcloud.io/dashboard?id=IowaComputerGurus_netcore.utilities.email.sendgrid)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=IowaComputerGurus_netcore.utilities.email.sendgrid&metric=sqale_index)](https://sonarcloud.io/dashboard?id=IowaComputerGurus_netcore.utilities.email.sendgrid)
 
-
-## NuGet (ICG.NetCore.Utilities.Email.SendGrid)
-
-![](https://img.shields.io/nuget/v/icg.netcore.utilities.email.sendgrid.svg) ![](https://img.shields.io/nuget/dt/icg.netcore.utilities.email.sendgrid.svg)
 
 ## Dependencies
 The following additional NuGet packages are installed with this extension.
@@ -33,19 +26,19 @@ The following additional NuGet packages are installed with this extension.
 
 ### Installation
 Standard installation via HuGet Package Manager
-```
+``` powershell
 Install-Package ICG.NetCore.Utilities.Email.SendGrid
 ```
 
 ### Setup & Configuration Options
 To setup the needed dependency injection items for this library, add the following line in your DI setup.
-```
+``` csharp
 services.UseIcgNetCoreUtilitiesEmailSendGrid();
 ```
 
 Additionally you must specify the needed configuration elements within your AppSettings.json file
 
-```
+``` json
   "SendGridServiceOptions": {
     "AdminEmail": "test@test.com",
     "AdminName": "John Smith",
@@ -77,7 +70,7 @@ Additionally you must specify the needed configuration elements within your AppS
 
 Usage is primarly completed by injecting the IEmailService interface to your respective project, one injected emails can be sent with a single line of code. 
 
-```
+``` csharp
 _sendGridService.SendEmail("recipient@me.com", "My Subject", "<p>Hello!</p>");
 ```
 Inline documentation exists for all API methods. We will continue to add more to this documentation in the future (PR's Welcome)
