@@ -85,20 +85,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
             if (!string.IsNullOrEmpty(fromName))
                 fromAddress.Name = fromName;
             var recipients = new List<EmailAddress> {new EmailAddress(to)};
-            if (cc != null)
-            {
-                foreach (var item in cc)
-                {
-                    try
-                    {
-                        recipients.Add(new EmailAddress(item));
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogWarning(ex, $"Unable to add {item} to email copy list");
-                    }
-                }
-            }
+            
             
             //Handle subjects
             if (_serviceOptions.AddEnvironmentSuffix && !_hostingEnvironment.IsProduction())
@@ -115,11 +102,30 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
             var plainTextBody = Regex.Replace(bodyHtml, "<[^>]*>", "");
             
             //Build message
+            SendGridMessage message = null;
             if (recipients.Count == 1)
-                return MailHelper.CreateSingleEmail(fromAddress, recipients[0], subject, plainTextBody, bodyHtml);
+                message = MailHelper.CreateSingleEmail(fromAddress, recipients[0], subject, plainTextBody, bodyHtml);
+            else
+                message = MailHelper.CreateSingleEmailToMultipleRecipients(fromAddress, recipients, subject, plainTextBody, bodyHtml);
 
-            return MailHelper.CreateSingleEmailToMultipleRecipients(fromAddress, recipients, subject, plainTextBody,
-                bodyHtml);
+            //Add CC later based on limitation of SendGrid API
+            if (cc != null)
+            {
+                foreach (var item in cc)
+                {
+                    try
+                    {
+                        var toAdd = new EmailAddress(item);
+                        message.AddCc(toAdd);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, $"Unable to add {item} to email copy list");
+                    }
+                }
+            }
+
+            return message;
         }
 
         /// <inheritdoc />

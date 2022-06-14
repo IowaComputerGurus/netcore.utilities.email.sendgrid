@@ -44,7 +44,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SendGrid" Version="9.25.1" />
+    <PackageReference Include="SendGrid" Version="9.28.0" />
   </ItemGroup>
 
 </Project>
