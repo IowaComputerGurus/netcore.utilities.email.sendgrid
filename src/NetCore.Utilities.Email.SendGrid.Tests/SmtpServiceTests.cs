@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Moq;
+using SendGrid.Helpers.Mail;
 using Xunit;
 
 namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
@@ -186,6 +188,79 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             _service.SendMessageWithAttachment(to, cc, subject, fileContent, fileName, message, null, requestedTemplate);
 
             //Assets
+        }
+
+        [Fact]
+        public void SendWithReplyTo_ShouldThrowArgumentException_WhenReplyToMissing()
+        {
+            //Arrange
+            var to = "tester@test.com";
+            var subject = "test";
+            var message = "message";
+
+            //Act/Assert
+            Assert.Throws<ArgumentNullException>(() => _service.SendWithReplyTo("", "", to, subject, message));
+        }
+
+        [Fact]
+        public void SendWithReplyTo_WithoutCCRecipients_ShouldSend_DefaultingFromAddress()
+        {
+            //Arrange
+            var replyTo = "sender@sendy.com";
+            var to = "tester@test.com";
+            var subject = "test";
+            var message = "message";
+            var returnMessage = new SendGridMessage();
+            _sendGridMessageBuilderMock
+                .Setup(s => s.CreateMessage(_options.AdminEmail, _options.AdminName, to, null, subject, message,
+                    "")).Returns(returnMessage).Verifiable();
+
+            //Act
+            _service.SendWithReplyTo(replyTo, "", to, subject, message);
+
+            //Verify
+        }
+
+        [Fact]
+        public void SendWithReplyTo_WithCCRecipients_ShouldSend_DefaultingFromAddress()
+        {
+            //Arrange
+            var replyTo = "sender@sendy.com";
+            var to = "tester@test.com";
+            var cc = new List<string> { "Person1@test.com" };
+            var subject = "test";
+            var message = "message";
+            var returnMessage = new SendGridMessage();
+            _sendGridMessageBuilderMock
+                .Setup(s => s.CreateMessage(_options.AdminEmail, _options.AdminName, to, cc, subject, message, "")).Returns(returnMessage).Verifiable();
+
+            //Act
+            _service.SendWithReplyTo(replyTo, "", to, cc, subject, message);
+
+            //Verify
+            _sendGridMessageBuilderMock.Verify();
+        }
+
+        [Fact]
+        public void SendWithReplyTo_ShouldPassOptionalTemplateName_ToMessageMethods()
+        {
+            //Arrange
+            var replyTo = "sender@sendy.com";
+            var to = "tester@test.com";
+            var cc = new List<string> { "Person1@test.com" };
+            var subject = "test";
+            var message = "message";
+            var requestedTemplate = "Test";
+            var returnMessage = new SendGridMessage();
+            _sendGridMessageBuilderMock
+                .Setup(s => s.CreateMessage(_options.AdminEmail, _options.AdminName, to, cc, subject, message,
+                    requestedTemplate)).Returns(returnMessage).Verifiable();
+
+            //Act
+            _service.SendWithReplyTo(replyTo, "", to, cc, subject, message, null, requestedTemplate);
+
+            //Assets
+            _sendGridMessageBuilderMock.Verify();
         }
     }
 }

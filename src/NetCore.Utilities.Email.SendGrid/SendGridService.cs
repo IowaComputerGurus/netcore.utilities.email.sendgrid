@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Mail;
 using Microsoft.Extensions.Options;
+using SendGrid.Helpers.Mail;
 
 namespace ICG.NetCore.Utilities.Email.SendGrid
 {
@@ -84,6 +87,69 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
             //Get the message to send
             var toSend = _messageBuilder.CreateMessage(_serviceOptions.AdminEmail, _serviceOptions.AdminName, toAddress, ccAddressList, subject,
                 bodyHtml, templateName);
+
+            //Determine the key to use
+            var apiKey = _serviceOptions.SendGridApiKey;
+            if (!string.IsNullOrEmpty(senderKeyName))
+                apiKey = _serviceOptions.AdditionalApiKeys[senderKeyName];
+
+            //Send
+            return _sender.SendMessage(apiKey, toSend).GetAwaiter().GetResult();
+        }
+
+        /// <inheritdoc />
+        public bool SendWithReplyTo(string replyToAddress, string replyToName, string toAddress, string subject, string bodyHtml)
+        {
+            //Call full overload
+            return SendWithReplyTo(replyToAddress, replyToName, toAddress, null, subject, bodyHtml);
+        }
+
+        /// <inheritdoc />
+        public bool SendWithReplyTo(string replyToAddress, string replyToName, string toAddress, string subject, string bodyHtml, List<KeyValuePair<string, string>> tokens)
+        {
+            return SendWithReplyTo(replyToAddress, replyToName, toAddress, null, subject, bodyHtml, null, "");
+        }
+
+        /// <inheritdoc />
+        public bool SendWithReplyTo(string replyToAddress, string replyToName, string toAddress, IEnumerable<string> ccAddressList, string subject, string bodyHtml)
+        {
+            return SendWithReplyTo(replyToAddress, replyToName, toAddress, ccAddressList, subject, bodyHtml, null, "");
+        }
+
+        /// <inheritdoc />
+        public bool SendWithReplyTo(string replyToAddress, string replyToName, string toAddress, IEnumerable<string> ccAddressList, string subject, string bodyHtml, List<KeyValuePair<string, string>> tokens)
+        {
+            return SendWithReplyTo(replyToAddress, replyToName, toAddress, ccAddressList, subject, bodyHtml, tokens, "");
+        }
+
+
+        /// <inheritdoc />
+        public bool SendWithReplyTo(string replyToAddress, string replyToName, string toAddress, IEnumerable<string> ccAddressList, string subject, string bodyHtml,
+            List<KeyValuePair<string, string>> tokens,
+            string templateName, string senderKeyName = "")
+        {
+            if (string.IsNullOrEmpty(replyToAddress))
+                throw new ArgumentNullException(nameof(replyToAddress));
+
+            if (tokens != null)
+            {
+                foreach (var item in tokens)
+                {
+                    bodyHtml = bodyHtml.Replace(item.Key, item.Value);
+                }
+            }
+
+            //Get the message to send
+            var toSend = _messageBuilder.CreateMessage(_serviceOptions.AdminEmail, _serviceOptions.AdminName, toAddress, ccAddressList, subject,
+                bodyHtml, templateName);
+
+            if (!string.IsNullOrEmpty(replyToAddress))
+            {
+                var replyTo = new EmailAddress(replyToAddress);
+                if (!string.IsNullOrEmpty(replyToName))
+                    replyTo.Name = replyToName;
+                toSend.ReplyTo = replyTo;
+            }
 
             //Determine the key to use
             var apiKey = _serviceOptions.SendGridApiKey;
