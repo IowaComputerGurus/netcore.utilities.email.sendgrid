@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Mail;
 using Microsoft.Extensions.Options;
 using SendGrid.Helpers.Mail;
 

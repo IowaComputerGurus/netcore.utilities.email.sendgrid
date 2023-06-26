@@ -46,7 +46,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
     /// <inheritdoc cref="ISendGridMessageBuilder"/>
     public class SendGridMessageBuilder : ISendGridMessageBuilder
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IHostEnvironment _hostingEnvironment;
         private readonly IEmailTemplateFactory _emailTemplateFactory;
         private readonly SendGridServiceOptions _serviceOptions;
         private readonly ILogger _logger;
@@ -58,7 +58,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
         /// <param name="emailTemplateFactory"></param>
         /// <param name="options"></param>
         /// <param name="logger"></param>
-        public SendGridMessageBuilder(IHostingEnvironment hostingEnvironment, IEmailTemplateFactory emailTemplateFactory, 
+        public SendGridMessageBuilder(IHostEnvironment hostingEnvironment, IEmailTemplateFactory emailTemplateFactory, 
             IOptions<SendGridServiceOptions> options, ILogger<SendGridMessageBuilder> logger)
         {
             _hostingEnvironment = hostingEnvironment;
