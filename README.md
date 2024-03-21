@@ -8,13 +8,9 @@ This library provides an easy to use implementation of SendGrid based email deli
 
 This package depends on the ICG.NetCore.Utilities.Email project for template implementation
 
-## SonarCloud Analysis
+## Breaking Changes
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=IowaComputerGurus_netcore.utilities.email.sendgrid&metric=alert_status)](https://sonarcloud.io/dashboard?id=IowaComputerGurus_netcore.utilities.email.sendgrid)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=IowaComputerGurus_netcore.utilities.email.sendgrid&metric=coverage)](https://sonarcloud.io/dashboard?id=IowaComputerGurus_netcore.utilities.email.sendgrid)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=IowaComputerGurus_netcore.utilities.email.sendgrid&metric=security_rating)](https://sonarcloud.io/dashboard?id=IowaComputerGurus_netcore.utilities.email.sendgrid)
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=IowaComputerGurus_netcore.utilities.email.sendgrid&metric=sqale_index)](https://sonarcloud.io/dashboard?id=IowaComputerGurus_netcore.utilities.email.sendgrid)
-
+Version 7.0 has a breaking change transitioning to Async for all methods!
 
 ## Dependencies
 The following additional NuGet packages are installed with this extension.
