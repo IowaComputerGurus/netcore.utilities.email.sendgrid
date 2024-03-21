@@ -34,7 +34,7 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="icg.netcore.utilities.email" Version="6.2.0" />
+    <PackageReference Include="icg.netcore.utilities.email" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
@@ -44,7 +44,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SendGrid" Version="9.28.1" />
+    <PackageReference Include="SendGrid" Version="9.29.2" />
   </ItemGroup>
 
 </Project>

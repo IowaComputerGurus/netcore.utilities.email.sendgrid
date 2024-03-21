@@ -84,20 +84,20 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
         }
 
         [Fact]
-        public void SendToAdministrator_ShouldSend_DefaultingFromAndToAddress()
+        public void SendToAdministratorAsync_ShouldSend_DefaultingFromAndToAddress()
         {
             //Arrange
             var subject = "Test";
             var message = "Message";
 
             //Act
-            _service.SendMessageToAdministrator(subject, message);
+            _service.SendMessageToAdministratorAsync(subject, message);
 
             //Verify
         }
 
         [Fact]
-        public void SendToAdministrator_ShouldSend_DefaultingFromAndToAddress_WithCCRecipients()
+        public void SendToAdministratorAsync_ShouldSend_DefaultingFromAndToAddress_WithCCRecipients()
         {
             //Arrange
             var subject = "Test";
@@ -105,13 +105,13 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var cc = new List<string> {"recipient@test.com"};
 
             //Act
-            _service.SendMessageToAdministrator(cc, subject, message);
+            _service.SendMessageToAdministratorAsync(cc, subject, message);
 
             //Verify
         }
 
         [Fact]
-        public void SendMessage_WithoutCCRecipients_ShouldSend_DefaultingFromAddress()
+        public void SendMessageAsync_WithoutCCRecipients_ShouldSend_DefaultingFromAddress()
         {
             //Arrange
             var to = "tester@test.com";
@@ -119,13 +119,13 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var message = "message";
 
             //Act
-            _service.SendMessage(to, subject, message);
+            _service.SendMessageAsync(to, subject, message);
 
             //Verify
         }
 
         [Fact]
-        public void SendMessage_WithCCRecipients_ShouldSend_DefaultingFromAddress()
+        public void SendMessageAsync_WithCCRecipients_ShouldSend_DefaultingFromAddress()
         {
             //Arrange
             var to = "tester@test.com";
@@ -134,13 +134,13 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var message = "message";
 
             //Act
-            _service.SendMessage(to, cc, subject, message);
+            _service.SendMessageAsync(to, cc, subject, message);
 
             //Verify
         }
 
         [Fact]
-        public void SendMessageWithAttachment_ShouldSend_DefaultingFromAddress()
+        public void SendMessageWithAttachmentAsync_ShouldSend_DefaultingFromAddress()
         {
             //Arrange
             var to = "tester@test.com";
@@ -151,13 +151,13 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var message = "message";
 
             //Act
-            _service.SendMessageWithAttachment(to, cc, subject, fileContent, fileName, message, null);
+            _service.SendMessageWithAttachmentAsync(to, cc, subject, fileContent, fileName, message, null);
 
             //Assets
         }
 
         [Fact]
-        public void SendMessage_ShouldPassOptionalTemplateName_ToMessageMethods()
+        public void SendMessageAsync_ShouldPassOptionalTemplateName_ToMessageMethods()
         {
             //Arrange
             var to = "tester@test.com";
@@ -167,13 +167,13 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var requestedTemplate = "Test";
 
             //Act
-            _service.SendMessage(to, cc, subject, message, null, requestedTemplate);
+            _service.SendMessageAsync(to, cc, subject, message, null, requestedTemplate);
 
             //Assets
         }
 
         [Fact]
-        public void SendMessageWithAttachment_ShouldPassOptionalTemplateName_ToMessageMethods()
+        public void SendMessageWithAttachmentAsync_ShouldPassOptionalTemplateName_ToMessageMethods()
         {
             //Arrange
             var to = "tester@test.com";
@@ -185,13 +185,13 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var requestedTemplate = "Test";
 
             //Act
-            _service.SendMessageWithAttachment(to, cc, subject, fileContent, fileName, message, null, requestedTemplate);
+            _service.SendMessageWithAttachmentAsync(to, cc, subject, fileContent, fileName, message, null, requestedTemplate);
 
             //Assets
         }
 
         [Fact]
-        public void SendWithReplyTo_ShouldThrowArgumentException_WhenReplyToMissing()
+        public async void SendWithReplyToAsync_ShouldThrowArgumentException_WhenReplyToMissing()
         {
             //Arrange
             var to = "tester@test.com";
@@ -199,11 +199,11 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             var message = "message";
 
             //Act/Assert
-            Assert.Throws<ArgumentNullException>(() => _service.SendWithReplyTo("", "", to, subject, message));
+            var result = await Assert.ThrowsAsync<ArgumentNullException>(() => _service.SendWithReplyToAsync("", "", to, subject, message));
         }
 
         [Fact]
-        public void SendWithReplyTo_WithoutCCRecipients_ShouldSend_DefaultingFromAddress()
+        public void SendWithReplyToAsync_WithoutCCRecipients_ShouldSend_DefaultingFromAddress()
         {
             //Arrange
             var replyTo = "sender@sendy.com";
@@ -216,13 +216,13 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
                     "")).Returns(returnMessage).Verifiable();
 
             //Act
-            _service.SendWithReplyTo(replyTo, "", to, subject, message);
+            _service.SendWithReplyToAsync(replyTo, "", to, subject, message);
 
             //Verify
         }
 
         [Fact]
-        public void SendWithReplyTo_WithCCRecipients_ShouldSend_DefaultingFromAddress()
+        public void SendWithReplyToAsync_WithCCRecipients_ShouldSend_DefaultingFromAddress()
         {
             //Arrange
             var replyTo = "sender@sendy.com";
@@ -235,14 +235,14 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
                 .Setup(s => s.CreateMessage(_options.AdminEmail, _options.AdminName, to, cc, subject, message, "")).Returns(returnMessage).Verifiable();
 
             //Act
-            _service.SendWithReplyTo(replyTo, "", to, cc, subject, message);
+            _service.SendWithReplyToAsync(replyTo, "", to, cc, subject, message);
 
             //Verify
             _sendGridMessageBuilderMock.Verify();
         }
 
         [Fact]
-        public void SendWithReplyTo_ShouldPassOptionalTemplateName_ToMessageMethods()
+        public void SendWithReplyToAsync_ShouldPassOptionalTemplateName_ToMessageMethods()
         {
             //Arrange
             var replyTo = "sender@sendy.com";
@@ -257,7 +257,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
                     requestedTemplate)).Returns(returnMessage).Verifiable();
 
             //Act
-            _service.SendWithReplyTo(replyTo, "", to, cc, subject, message, null, requestedTemplate);
+            _service.SendWithReplyToAsync(replyTo, "", to, cc, subject, message, null, requestedTemplate);
 
             //Assets
             _sendGridMessageBuilderMock.Verify();

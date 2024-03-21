@@ -37,61 +37,14 @@ jobs:
     - name: Build
       run: dotnet build "${{ env.solution-path }}" --no-restore --configuration Release -p:version=${{ steps.gitversion.outputs.majorMinorPatch }}
     - name: Test
-      run: dotnet test "${{ env.solution-path }}" --no-build --configuration Release
-    
-  
-  code-quality:
-    if: github.actor != 'dependabot[bot]'
-    runs-on: windows-latest
-    name: Analyze Code Quality
-    env:
-      solution-path: './src/NetCore.Utilities.Email.SendGrid.sln'
-    steps:
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: zulu
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3.3.2
-        with:
-          path: ~\sonar\cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache SonarCloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v3.3.2
-        with:
-          path: .\.sonar\scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
-      - name: Install SonarCloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: powershell
-        run: |
-          New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-          
-      - name: Install GitVersion
-        run: dotnet tool install --global GitVersion.Tool
+      run: dotnet test "${{ env.solution-path }}" --no-build --configuration Release --collect "XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover --logger "trx;LogFileName=unittests.trx"
 
-      - name: Determine Version
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.10.2
-        with:
-          useConfigFile: true 
-
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: powershell
-        run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"IowaComputerGurus_netcore.utilities.email.sendgrid" /o:"iowacomputergurus-github" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet restore "${{ env.solution-path }}"
-          dotnet build "${{ env.solution-path }}" --no-restore --configuration Release -p:version=${{ steps.gitversion.outputs.majorMinorPatch }}
-          dotnet test "${{ env.solution-path }}" --no-build --configuration Release --collect "XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover --logger "trx;LogFileName=unittests.trx"
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+    - name: Push Coverage to Codacy
+      shell: bash
+      env:
+        CODACY_ORGANIZATION_PROVIDER: ${{ secrets.CODACY_ORGANIZATION_PROVIDER }}
+        CODACY_USERNAME: ${{ secrets.CODACY_USERNAME }}
+        CODACY_PROJECT_NAME: ${{ secrets.CODACY_PROJECT_NAME }}
+        CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
+      run: |
+        bash <(curl -Ls https://coverage.codacy.com/get.sh) report $(find . -name '*.opencover.xml' -printf '-r %p ')
