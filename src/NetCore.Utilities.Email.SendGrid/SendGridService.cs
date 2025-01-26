@@ -58,7 +58,7 @@ public class SendGridService : IEmailService
     public Task<bool> SendMessageAsync(string toAddress, string subject, string bodyHtml,
         List<KeyValuePair<string, string>> tokens)
     {
-        return SendMessageAsync(toAddress, null, subject, bodyHtml, null, "");
+        return SendMessageAsync(toAddress, null, subject, bodyHtml, tokens, "");
     }
 
     /// <inheritdoc />
