@@ -2,6 +2,8 @@
 
 ![Build Status](https://github.com/IowaComputerGurus/netcore.utilities.email/actions/workflows/ci-build.yml/badge.svg)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=IowaComputerGurus_netcore.utilities.email.sendgrid&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=IowaComputerGurus_netcore.utilities.email.sendgrid) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=IowaComputerGurus_netcore.utilities.email.sendgrid&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=IowaComputerGurus_netcore.utilities.email.sendgrid) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=IowaComputerGurus_netcore.utilities.email.sendgrid&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=IowaComputerGurus_netcore.utilities.email.sendgrid)
+
 ![](https://img.shields.io/nuget/v/icg.netcore.utilities.email.sendgrid.svg) ![](https://img.shields.io/nuget/dt/icg.netcore.utilities.email.sendgrid.svg)
 
 This library provides an easy to use implementation of SendGrid based email delivery.  This abstraction with proper interfaces allows email implementation inside of your project with little effort and easy to manage integration, and boasts features such as automatic environment name appending as well as robust email templates.
