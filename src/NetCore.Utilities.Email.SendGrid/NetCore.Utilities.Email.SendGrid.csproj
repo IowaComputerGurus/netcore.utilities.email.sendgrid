@@ -25,7 +25,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
-	<PropertyGroup Condition="'$GITHUB_ACTIONS)' == 'true'">
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 	</PropertyGroup>
 
@@ -34,7 +34,7 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="icg.netcore.utilities.email" Version="7.0.0" />
+    <PackageReference Include="icg.netcore.utilities.email" Version="8.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
