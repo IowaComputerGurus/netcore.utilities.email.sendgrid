@@ -262,5 +262,115 @@ namespace ICG.NetCore.Utilities.Email.SendGrid.Tests
             //Assets
             _sendGridMessageBuilderMock.Verify();
         }
+
+        [Fact]
+        public void SendWithCustomFromEmailAsync_ShouldSend_DefaultingFromAddress()
+        {
+            //Arrange
+            var from = "custom@test.com";
+            var fromName = "Custom Sender";
+            var to = "tester@test.com";
+            var subject = "test";
+            var message = "message";
+            var returnMessage = new SendGridMessage();
+            _sendGridMessageBuilderMock
+                .Setup(s => s.CreateMessage(from, fromName, to, null, subject, message, "")).Returns(returnMessage).Verifiable();
+
+            //Act
+            _service.SendWithCustomFromEmailAsync(from, fromName, to, subject, message);
+
+            //Verify
+            _sendGridMessageBuilderMock.Verify();
+        }
+
+        [Fact]
+        public void SendWithCustomFromEmailAsync_WithCCRecipients_ShouldSend_DefaultingFromAddress()
+        {
+            //Arrange
+            var from = "custom@test.com";
+            var fromName = "Custom Sender";
+            var to = "tester@test.com";
+            var cc = new List<string> { "Person1@test.com" };
+            var subject = "test";
+            var message = "message";
+            var returnMessage = new SendGridMessage();
+            _sendGridMessageBuilderMock
+                .Setup(s => s.CreateMessage(from, fromName, to, cc, subject, message, "")).Returns(returnMessage).Verifiable();
+
+            //Act
+            _service.SendWithCustomFromEmailAsync(from, fromName, to, cc, subject, message);
+
+            //Verify
+            _sendGridMessageBuilderMock.Verify();
+        }
+
+        [Fact]
+        public void SendWithCustomFromEmailAsync_ShouldPassOptionalTemplateName_ToMessageMethods()
+        {
+            //Arrange
+            var from = "custom@test.com";
+            var fromName = "Custom Sender";
+            var to = "tester@test.com";
+            var cc = new List<string> { "Person1@test.com" };
+            var subject = "test";
+            var message = "message";
+            var requestedTemplate = "Test";
+            var returnMessage = new SendGridMessage();
+            _sendGridMessageBuilderMock
+                .Setup(s => s.CreateMessage(from, fromName, to, cc, subject, message, requestedTemplate)).Returns(returnMessage).Verifiable();
+
+            //Act
+            _service.SendWithCustomFromEmailAsync(from, fromName, to, cc, subject, message, null, requestedTemplate);
+
+            //Verify
+            _sendGridMessageBuilderMock.Verify();
+        }
+
+        [Fact]
+        public void SendWithCustomFromEmailAndAttachmentAsync_ShouldSend_DefaultingFromAddress()
+        {
+            //Arrange
+            var from = "custom@test.com";
+            var fromName = "Custom Sender";
+            var to = "tester@test.com";
+            var cc = new List<string> { "Person1@test.com" };
+            var subject = "test";
+            var fileContent = Encoding.ASCII.GetBytes("Testing");
+            var fileName = "test.txt";
+            var message = "message";
+            var returnMessage = new SendGridMessage();
+            _sendGridMessageBuilderMock
+                .Setup(s => s.CreateMessageWithAttachment(from, fromName, to, cc, fileContent, fileName, subject, message, "")).Returns(returnMessage).Verifiable();
+
+            //Act
+            _service.SendWithCustomFromEmailAndAttachmentAsync(from, fromName, to, cc, subject, fileContent, fileName, message, null);
+
+            //Verify
+            _sendGridMessageBuilderMock.Verify();
+        }
+
+        [Fact]
+        public void SendWithCustomFromEmailAndAttachmentAsync_ShouldPassOptionalTemplateName_ToMessageMethods()
+        {
+            //Arrange
+            var from = "custom@test.com";
+            var fromName = "Custom Sender";
+            var to = "tester@test.com";
+            var cc = new List<string> { "Person1@test.com" };
+            var subject = "test";
+            var fileContent = Encoding.ASCII.GetBytes("Testing");
+            var fileName = "test.txt";
+            var message = "message";
+            var requestedTemplate = "Test";
+            var returnMessage = new SendGridMessage();
+            _sendGridMessageBuilderMock
+                .Setup(s => s.CreateMessageWithAttachment(from, fromName, to, cc, fileContent, fileName, subject, message, requestedTemplate)).Returns(returnMessage).Verifiable();
+
+            //Act
+            _service.SendWithCustomFromEmailAndAttachmentAsync(from, fromName, to, cc, subject, fileContent, fileName, message, null, requestedTemplate);
+
+            //Verify
+            _sendGridMessageBuilderMock.Verify();
+        }
     }
 }

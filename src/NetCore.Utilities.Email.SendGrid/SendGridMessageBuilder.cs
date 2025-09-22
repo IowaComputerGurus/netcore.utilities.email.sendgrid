@@ -120,7 +120,7 @@ namespace ICG.NetCore.Utilities.Email.SendGrid
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogWarning(ex, $"Unable to add {item} to email copy list");
+                        _logger.LogWarning(ex, "Unable to add {item} to email copy list", item);
                     }
                 }
             }
